@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Poster Generate Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&family=Roboto+Mono:wght@400&family=Poppins:wght@500&family=Oswald:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet" href="index.css" />
+  <script type="importmap">
+{
+  "imports": {
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.25.0"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="app">
+
+      <!-- Left Side: Control Panel -->
+      <aside id="control-panel">
+        <header class="sidebar-header">
+          <h1>Poster Generate</h1>
+          <p>AI-Powered Design Studio</p>
+        </header>
+
+        <div class="controls-wrapper">
+            <details class="control-section" open>
+                <summary>
+                    <span class="material-symbols-outlined">title</span>
+                    <h3>Text & Logo</h3>
+                    <div class="chevron"></div>
+                </summary>
+                <div class="section-content">
+                    <div class="form-group">
+                        <label for="prompt-input">Primary Description</label>
+                        <textarea id="prompt-input" placeholder="e.g., A sci-fi film festival poster..." required></textarea>
+                    </div>
+                    <div class="suggestion-box">
+                        <div class="suggestion-header">
+                            <h4>AI Prompt Suggestion</h4>
+                            <button id="get-suggestion-btn" class="icon-button" aria-label="Get new suggestion">
+                                <span class="material-symbols-outlined">auto_awesome</span>
+                            </button>
+                        </div>
+                        <div class="form-group">
+                             <label for="suggestion-keywords-input">Keywords (Optional)</label>
+                            <input type="text" id="suggestion-keywords-input" placeholder="e.g., retro, dark, vibrant">
+                        </div>
+                        <p id="suggestion-text">Get a creative prompt suggestion...</p>
+                        <button id="use-suggestion-btn" class="button-secondary full-width" disabled>Use This Suggestion</button>
+                    </div>
+                    
+                    <!-- Text Input with Styling -->
+                    <div class="form-group">
+                        <label for="poster-name-input">Event Name</label>
+                        <div class="text-input-group">
+                            <div class="main-input-row">
+                                <input type="text" id="poster-name-input" placeholder="Cosmic Odyssey Film Fest">
+                                <button class="style-toggle-btn" aria-label="Toggle text styling">
+                                    <span class="material-symbols-outlined">tune</span>
+                                </button>
+                            </div>
+                            <div class="style-controls hidden">
+                                <select class="font-select" data-target="poster-name-input">
+                                    <option value="Inter">Inter (Sans-serif)</option>
+                                    <option value="Playfair Display">Playfair Display (Serif)</option>
+                                    <option value="Roboto Mono">Roboto Mono (Monospace)</option>
+                                    <option value="Poppins">Poppins (Modern)</option>
+                                    <option value="Oswald">Oswald (Condensed)</option>
+                                </select>
+                                <input type="number" class="font-size-input" placeholder="Size" value="72" data-target="poster-name-input">
+                                <input type="color" class="font-color-input" value="#FFFFFF" data-target="poster-name-input">
+                            </div>
+                        </div>
+                    </div>
+
+                     <div class="form-grid">
+                        <div class="form-group">
+                            <label for="date-input">Date</label>
+                            <div class="text-input-group">
+                                <div class="main-input-row">
+                                    <input type="text" id="date-input" placeholder="October 26-28">
+                                    <button class="style-toggle-btn" aria-label="Toggle text styling">
+                                        <span class="material-symbols-outlined">tune</span>
+                                    </button>
+                                </div>
+                                <div class="style-controls hidden">
+                                    <select class="font-select" data-target="date-input">
+                                        <option value="Inter">Inter (Sans-serif)</option>
+                                        <option value="Playfair Display">Playfair Display (Serif)</option>
+                                        <option value="Roboto Mono">Roboto Mono (Monospace)</option>
+                                        <option value="Poppins">Poppins (Modern)</option>
+                                        <option value="Oswald">Oswald (Condensed)</option>
+                                    </select>
+                                    <input type="number" class="font-size-input" placeholder="Size" value="24" data-target="date-input">
+                                    <input type="color" class="font-color-input" value="#FFFFFF" data-target="date-input">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="time-input">Time</label>
+                             <div class="text-input-group">
+                                <div class="main-input-row">
+                                    <input type="text" id="time-input" placeholder="7:00 PM">
+                                    <button class="style-toggle-btn" aria-label="Toggle text styling">
+                                        <span class="material-symbols-outlined">tune</span>
+                                    </button>
+                                </div>
+                                <div class="style-controls hidden">
+                                    <select class="font-select" data-target="time-input">
+                                         <option value="Inter">Inter (Sans-serif)</option>
+                                        <option value="Playfair Display">Playfair Display (Serif)</option>
+                                        <option value="Roboto Mono">Roboto Mono (Monospace)</option>
+                                        <option value="Poppins">Poppins (Modern)</option>
+                                        <option value="Oswald">Oswald (Condensed)</option>
+                                    </select>
+                                    <input type="number" class="font-size-input" placeholder="Size" value="24" data-target="time-input">
+                                    <input type="color" class="font-color-input" value="#FFFFFF" data-target="time-input">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="venue-input">Venue / Location</label>
+                        <div class="text-input-group">
+                            <div class="main-input-row">
+                                <input type="text" id="venue-input" placeholder="Galaxy Theater">
+                                <button class="style-toggle-btn" aria-label="Toggle text styling">
+                                    <span class="material-symbols-outlined">tune</span>
+                                </button>
+                            </div>
+                            <div class="style-controls hidden">
+                                <select class="font-select" data-target="venue-input">
+                                     <option value="Inter">Inter (Sans-serif)</option>
+                                    <option value="Playfair Display">Playfair Display (Serif)</option>
+                                    <option value="Roboto Mono">Roboto Mono (Monospace)</option>
+                                    <option value="Poppins">Poppins (Modern)</option>
+                                    <option value="Oswald">Oswald (Condensed)</option>
+                                </select>
+                                <input type="number" class="font-size-input" placeholder="Size" value="28" data-target="venue-input">
+                                <input type="color" class="font-color-input" value="#FFFFFF" data-target="venue-input">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="extra-input">Extra Info</label>
+                         <div class="text-input-group">
+                            <div class="main-input-row">
+                                <input type="text" id="extra-input" placeholder="ft. special guests">
+                                <button class="style-toggle-btn" aria-label="Toggle text styling">
+                                    <span class="material-symbols-outlined">tune</span>
+                                </button>
+                            </div>
+                            <div class="style-controls hidden">
+                                <select class="font-select" data-target="extra-input">
+                                     <option value="Inter">Inter (Sans-serif)</option>
+                                    <option value="Playfair Display">Playfair Display (Serif)</option>
+                                    <option value="Roboto Mono">Roboto Mono (Monospace)</option>
+                                    <option value="Poppins">Poppins (Modern)</option>
+                                    <option value="Oswald">Oswald (Condensed)</option>
+                                </select>
+                                <input type="number" class="font-size-input" placeholder="Size" value="20" data-target="extra-input">
+                                <input type="color" class="font-color-input" value="#FFFFFF" data-target="extra-input">
+                            </div>
+                        </div>
+                    </div>
+
+                     <div class="form-group">
+                         <label for="logo-upload" class="button">
+                            <span class="material-symbols-outlined">upload</span> Upload Logo
+                         </label>
+                         <input type="file" id="logo-upload" accept="image/*" />
+                         <img id="logo-preview" src="" alt="Logo Preview" class="hidden" />
+                    </div>
+                </div>
+            </details>
+
+            <details class="control-section">
+                <summary>
+                    <span class="material-symbols-outlined">palette</span>
+                    <h3>Style</h3>
+                    <div class="chevron"></div>
+                </summary>
+                <div class="section-content">
+                    <div class="form-group">
+                        <label for="style-preset-select">Artistic Style Presets</label>
+                        <select id="style-preset-select">
+                            <option value="" disabled selected>Select a style...</option>
+                            <option value="Vintage Travel Poster">Vintage Travel Poster</option>
+                            <option value="Cyberpunk Glitch Art">Cyberpunk Glitch Art</option>
+                            <option value="Art Nouveau Floral">Art Nouveau Floral</option>
+                            <option value="Bauhaus Geometric">Bauhaus Geometric</option>
+                            <option value="Abstract Expressionism">Abstract Expressionism</option>
+                            <option value="Minimalist Scandinavian">Minimalist Scandinavian</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                       <label for="style-input">Custom Style</label>
+                       <div class="input-with-button">
+                           <input type="text" id="style-input" placeholder="e.g., Neo-Brutalist" />
+                           <button id="get-style-btn" class="icon-button" aria-label="Get new style">
+                               <span class="material-symbols-outlined">auto_awesome</span>
+                           </button>
+                        </div>
+                    </div>
+                </div>
+            </details>
+
+            <details class="control-section">
+                <summary>
+                    <span class="material-symbols-outlined">colors</span>
+                    <h3>Color Palette</h3>
+                    <div class="chevron"></div>
+                </summary>
+                 <div class="section-content">
+                    <div class="form-group">
+                        <label for="color-preset-select">Palette Presets</label>
+                         <select id="color-preset-select">
+                            <option value="" disabled>Select a palette...</option>
+                            <option value="sunset" selected>Vibrant Sunset</option>
+                            <option value="ocean">Cool Ocean</option>
+                            <option value="forest">Enchanted Forest</option>
+                            <option value="monochrome">Monochrome</option>
+                            <option value="neon">Cyberpunk Neon</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Custom Colors</label>
+                        <div id="custom-color-inputs" class="custom-color-container">
+                            <!-- Inputs will be dynamically populated -->
+                        </div>
+                    </div>
+                </div>
+            </details>
+
+            <details class="control-section">
+                <summary>
+                    <span class="material-symbols-outlined">aspect_ratio</span>
+                    <h3>Output Size</h3>
+                    <div class="chevron"></div>
+                </summary>
+                 <div class="section-content">
+                    <div class="resolution-selector">
+                        <button class="resolution-btn" data-resolution="720x1280">720p</button>
+                        <button class="resolution-btn active" data-resolution="1080x1920">1080p</button>
+                        <button class="resolution-btn" data-resolution="1440x2560">2K</button>
+                    </div>
+                     <div class="form-grid">
+                        <div class="form-group">
+                            <label for="custom-width-input">Width (px)</label>
+                            <input type="number" id="custom-width-input" placeholder="1080">
+                        </div>
+                         <div class="form-group">
+                            <label for="custom-height-input">Height (px)</label>
+                            <input type="number" id="custom-height-input" placeholder="1920">
+                        </div>
+                    </div>
+                </div>
+            </details>
+             <details class="control-section">
+                <summary>
+                    <span class="material-symbols-outlined">key</span>
+                    <h3>Advanced</h3>
+                    <div class="chevron"></div>
+                </summary>
+                 <div class="section-content">
+                     <div class="form-group">
+                        <label for="api-key-input">Custom API Key (Optional)</label>
+                        <input type="password" id="api-key-input" placeholder="Enter your API key" autocomplete="off">
+                        <p class="field-description">Your key will be used for this session.</p>
+                    </div>
+                </div>
+            </details>
+        </div>
+
+        <footer class="sidebar-footer">
+            <div class="generate-buttons-container">
+                <button id="reset-btn" class="button-secondary">
+                    <span class="material-symbols-outlined">delete_sweep</span> Reset
+                </button>
+                <button id="generate-btn" class="button-primary">
+                    <span class="btn-text">Generate Poster</span>
+                    <div class="spinner hidden"></div>
+                </button>
+            </div>
+        </footer>
+      </aside>
+
+      <!-- Right Side: Canvas -->
+      <main id="canvas">
+        <div id="placeholder" class="canvas-state">
+            <div class="placeholder-content">
+                 <span class="material-symbols-outlined">palette</span>
+                <h2>Your poster will appear here</h2>
+                <p>Fill out the details on the left and click "Generate Poster"</p>
+            </div>
+        </div>
+        <div id="result-container" class="canvas-state hidden">
+            <img id="result-image" src="" alt="Generated Poster" />
+            <div class="result-actions">
+                <a id="download-btn" href="#" class="button-primary" download="generated-poster.png">
+                    <span class="material-symbols-outlined">download</span> Download
+                </a>
+            </div>
+        </div>
+        <div id="loading-state" class="canvas-state hidden">
+             <div class="spinner-large"></div>
+             <p>Generating your masterpiece...</p>
+        </div>
+        <div id="error-message" class="canvas-state hidden">
+             <div class="error-content">
+                <span class="material-symbols-outlined">error</span>
+                <h2>Generation Failed</h2>
+                <p id="error-text"></p>
+            </div>
+        </div>
+      </main>
+
+    </div>
+    <script type="module" src="index.tsx"></script>
+  </body>
+</html>
